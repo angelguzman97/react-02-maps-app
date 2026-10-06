@@ -1,5 +1,7 @@
-import { Map } from "mapbox-gl";
+/* eslint import/no-webpack-loader-syntax: off */
 import { createContext } from "react";
+//@ts-ignore
+import { Map } from "!mapbox-gl";
 
 interface MapContextProps {
   isMapReady: boolean;
