@@ -11,6 +11,8 @@
     "@types/node": "^16.18.126",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "axios": "^1.20.0",
+    "mapbox-gl": "^3.30.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-scripts": "5.0.1",
