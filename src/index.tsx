@@ -6,7 +6,7 @@ import { MapsApp } from './MapsApp';
 //@ts-ignore
 import mapboxgl from '!mapbox-gl';
 
-mapboxgl.accessToken = import.meta.env.VITE_ACCESS_TOKEN;
+mapboxgl.accessToken = process.env.REACT_APP_ACCESS_TOKEN;
 
 if (!navigator.geolocation) {
   alert('Tu navegador no tiene opcion de Geolocalizacion');
