@@ -80,30 +80,50 @@ export const MapProvider = ({ children }: Props) => {
 
     //
     const getRouteBetweenPoints = async (start: [number, number], end: [number, number]) => {
-        const resp = await directionsApi.get<DirectionsResponse>(`/${start.join(',')};${end.join(',')} `);
+        if (
+            !Array.isArray(start) ||
+            !Array.isArray(end) ||
+            start.length !== 2 ||
+            end.length !== 2 ||
+            ![...start, ...end].every(
+                coord => typeof coord === "number" && Number.isFinite(coord)
+            )
+        ) {
+            console.error("Coordenadas de inicio o destino inválidas", {
+                start,
+                end
+            });
+            return;
+        }
+        const resp = await directionsApi.get<DirectionsResponse>(`/${start.join(',')};${end.join(',')}`);
         const { distance, duration, geometry } = resp.data.routes[0];
         const { coordinates: coords } = geometry;
         let kms = distance / 1000;
         kms = Math.round(kms * 100);
         kms /= 100;
 
-        const minutes = Math.floor(duration / 60);
+        Math.floor(duration / 60);
 
-        console.log({ kms, minutes });
-
-        const bounds = new LngLatBounds(
-            start,
-            start
-        );
-
+        const bounds = new LngLatBounds();
+        bounds.extend(start);
+        bounds.extend(end);
         for (const coord of coords) {
-            const newCoord: [number, number] = [coord[0], coord[1]];
-            bounds.extend(newCoord);
+            if (Array.isArray(coord) && coord.length >= 2 && Number.isFinite(coord[0]) && Number.isFinite(coord[1])) {
+                bounds.extend([coord[0], coord[1]]);
+            } else {
+                console.error("Coordenadas inválida de Directions:", coord);
+
+            }
         }
 
-        state.map?.fitBounds(bounds, {
-            padding: 200
-        });
+        if (!bounds.isEmpty() && state.map) {
+            const boundsArray = bounds.toArray();
+
+            state.map.fitBounds(boundsArray, {
+                padding: 200
+            })
+        }
+
 
         // Definicion de Polyline
         const sourceData: AnySourceData = {
