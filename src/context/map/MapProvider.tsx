@@ -31,6 +31,19 @@ export const MapProvider = ({ children }: Props) => {
     const { places } = useContext(PlacesContext);
 
     useEffect(() => {
+
+        if (places.length === 0) {
+            if (state.map?.getLayer("RouteString")) {
+                state.map?.removeLayer("RouteString");
+            }
+            if (state.map?.getSource("RouteString")) {
+                state.map.removeSource("RouteString");
+            }
+
+            dispatch({ type: "setMarkers", payload: [] });
+            return;
+        }
+
         state.markers.forEach(marker => marker.remove()); // Eliminar markers
         const newMarkers: Marker[] = [];
 
